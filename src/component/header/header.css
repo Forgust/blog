@@ -1,0 +1,28 @@
+.header {
+  width: 100%;
+  height: auto;
+  background-color: white;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  box-sizing: border-box;
+}
+
+.header-btns {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+.log-out--btn {
+  border: 1px solid black;
+  font-weight: 400;
+  font-size: 15px;
+  height: 45px;
+}
+
+.posts--btn {
+  color: black !important;
+}

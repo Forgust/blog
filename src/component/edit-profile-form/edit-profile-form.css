@@ -1,0 +1,26 @@
+.edit-profile {
+  width: fit-content;
+  justify-self: center;
+  padding: 24px;
+}
+
+.edit-profile_form {
+  background-color: white;
+  padding: 38px 32px;
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  gap: 16px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  box-shadow: 0 0 15px -10px black;
+}
+
+.edit-profile_form > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.edit-profile .form-button {
+  margin-top: 8px;
+}

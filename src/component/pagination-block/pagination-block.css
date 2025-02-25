@@ -1,0 +1,17 @@
+.footer {
+  padding-bottom: 24px;
+  justify-self: flex-end;
+}
+
+.ant-pagination > .ant-pagination-item {
+  border-color: #ebeef3;
+  background-color: #ebeef3;
+}
+
+.ant-pagination > .ant-pagination-item.ant-pagination-item-active {
+  background-color: #1890ff;
+}
+
+.ant-pagination > .ant-pagination-item.ant-pagination-item-active > a {
+  color: white;
+}

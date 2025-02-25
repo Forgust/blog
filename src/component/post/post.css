@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400&display=swap');
+.post {
+  background-color: white;
+  display: grid;
+  width: 800px;
+  min-height: 100px;
+  grid-template-columns: 1fr 30%;
+  padding: 16px;
+  font-family: Verdana, sans-serif;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 14px;
+  box-shadow: 0 0 15px -10px black;
+  gap: 16px;
+}
+
+.post_info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.post_description {
+  opacity: 0.9;
+  font-size: 14px;
+}
+
+.post_title-block {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+.post_likes-container {
+  display: flex;
+  align-items: center;
+}
+
+.post_likes {
+  font-size: 12px;
+}
+
+.post_author {
+  align-self: flex-start;
+  justify-self: end;
+}
+
+.author {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+}
+
+.post_date {
+  opacity: 0.7;
+}
+
+.post_like-btn {
+  background-image: url('./post-img/Vector.svg');
+  background-position: center;
+  background-color: inherit;
+  background-repeat: no-repeat;
+  border: 0;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.post_like-btn:disabled {
+  cursor: auto;
+  opacity: 0.8;
+}
+
+.post_like-btn.liked {
+  background-image: url('./post-img/path4.svg');
+}
+
+.author_avatar {
+  height: 40px;
+  width: 40px;
+}
