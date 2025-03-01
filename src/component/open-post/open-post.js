@@ -1,23 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Markdown from 'react-markdown';
 import Title from 'antd/es/typography/Title';
 import { HeartOutlined } from '@ant-design/icons';
-import PostsHandler from '../posts-handler';
+import { useDispatch, useSelector } from 'react-redux';
+import { getPost } from '../../redux/actions';
+
+import PostsHandler from '../data-handler';
 import './open-post.css';
 
 const OpenPost = () => {
-  const handler = new PostsHandler();
   const { id } = useParams();
-  const [postInfo, setPostInfo] = useState('');
+  const dispatch = useDispatch();
   useEffect(() => {
-    handler.getPost(id).then((res) => {
-      const post = res.article;
-      setPostInfo(handler.getPostInfo(post));
-    });
+    dispatch(getPost(id));
   }, []);
-  const { title, likes, tags, author, date, body, authorImage } = postInfo;
+
+  const handler = new PostsHandler();
+  const { post } = useSelector((state) => state.data);
+  const { title, likes, tags, author, date, body, authorImage, description } = post;
   const titleStyle = { margin: '0', textAlign: 'end' };
   const tagsList = handler.getTags(tags);
   return (
@@ -31,7 +33,7 @@ const OpenPost = () => {
           <span className="post_likes">{likes}</span>
         </div>
         <div className="post_tags">{tagsList}</div>
-        <div className="open-post_description">{}</div>
+        <div className="open-post_description">{description}</div>
       </div>
       <div className="post_author author">
         <div className="author_description">
@@ -42,9 +44,7 @@ const OpenPost = () => {
         </div>
         <img src={authorImage} alt="avatar icon" className="author_avatar" />
       </div>
-      <p className="open-post_text">
-        <Markdown>{body}</Markdown>
-      </p>
+      <Markdown>{body}</Markdown>
     </article>
   );
 };

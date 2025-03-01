@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import Title from 'antd/es/typography/Title';
 import { HeartOutlined } from '@ant-design/icons';
-import PostsHandler from '../posts-handler';
+import PostsHandler from '../data-handler';
 
 import defaultAvatar from './post-img/default_avatar.svg';
 import './post.css';

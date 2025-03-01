@@ -1,95 +1,134 @@
+import React, { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Title from 'antd/es/typography/Title';
-import React, { useState } from 'react';
-import './sign-up.css';
 import { Button } from 'antd';
-import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { useForm } from 'react-hook-form';
+import { SignUpError } from '../../error/registration-error';
+import DataHandler from '../../data-handler';
+import { regNewUser } from '../../../redux/actions';
+
+import './sign-up.css';
 
 const SignUp = () => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [repeatPassword, setRepeatPassword] = useState('');
-  const [passwordError, setPasswordError] = useState(false);
-  const [repPassError, setRepPassError] = useState(false);
-
-  const handleChange = (e) => {
-    console.log(e.target);
-    let repPassEl = document.getElementById('repeat-password');
-    const currentInput = e.target;
-    switch (currentInput.id) {
-      case 'password':
-        setPassword(currentInput.value);
-        if (currentInput.value.length < 6) {
-          setPasswordError(true);
-          currentInput.classList.add('error-border');
-        } else {
-          setPasswordError(false);
-          currentInput.classList.remove('error-border');
-        }
-        if (currentInput.value === repeatPassword) {
-          setRepPassError(false);
-          repPassEl.classList.remove('error-border');
-        } else {
-          setRepPassError(true);
-          repPassEl.classList.add('error-border');
-        }
-        break;
-      case 'repeat-password':
-        setRepeatPassword(currentInput.value);
-        if (currentInput.value !== password) {
-          setRepPassError(true);
-          repPassEl.classList.add('error-border');
-        } else {
-          setRepPassError(false);
-          repPassEl.classList.remove('error-border');
-        }
-        break;
-      case 'username':
-        setUsername(currentInput.value);
-        break;
-      case 'email':
-        setEmail(currentInput.value);
-        break;
+  const handler = new DataHandler();
+  const { register, handleSubmit, formState, setError, clearErrors } = useForm({ mode: 'onChange' });
+  const { serviceErrors, logged } = useSelector((state) => state.data);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  useEffect(() => {
+    handler.setNewErrors(serviceErrors, (field, error) => setError(field, error));
+    return () => {
+      clearErrors();
+    };
+  }, [serviceErrors]);
+  useEffect(() => {
+    if (logged) {
+      navigate('/');
     }
+  }, [logged]);
+
+  const onSubmit = (data) => {
+    console.log(data);
+    dispatch(regNewUser(data));
   };
 
+  const errors = formState.errors;
+  const usernameError = errors['username']?.message;
+  const emailError = errors['email']?.message;
+  const passError = errors['password']?.message;
+  const passRepError = errors['repeat-password']?.message;
+  const policyError = errors['policy']?.message;
   return (
     <article className="sign-up">
-      <form onChange={handleChange} className="sign-up_form" method="post">
+      <form onSubmit={handleSubmit(onSubmit)} className="sign-up_form">
         <Title level={4} style={{ margin: 0, alignSelf: 'center' }}>
           Create new account
         </Title>
         <div className="form-item">
           <label htmlFor="username">Username</label>
-          <input type="text" id="username" placeholder="Username" value={username} />
-        </div>
-        <div className="form-item">
-          <label htmlFor="email">Email address</label>
-          <input type="email" id="email" placeholder="Email address" value={email} />
-        </div>
-        <div className="form-item">
-          <label htmlFor="password">Password</label>
-          <input type="password" id="password" placeholder="Password" value={password} required />
-          <SignUpError passwordError={passwordError} />
+          <input
+            className={usernameError ? 'error-border' : ''}
+            type="text"
+            id="username"
+            placeholder="Username"
+            {...register('username', {
+              required: 'this field is required',
+              minLength: { value: 3, message: 'must be longer than 3 characters' },
+              maxLength: { value: 20, message: 'It"s very big' },
+            })}
+          />
+          <SignUpError error={usernameError} />
         </div>
 
         <div className="form-item">
-          <label htmlFor="repeat-password">Repeat Password</label>
-          <input type="password" id="repeat-password" placeholder="Repeat Password" value={repeatPassword} required />
-          <SignUpError repPassError={repPassError} />
+          <label htmlFor="email">Email address</label>
+          <input
+            className={emailError ? 'error-border' : ''}
+            type="email"
+            id="email"
+            placeholder="Email address"
+            {...register('email', {
+              required: 'this field is required',
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+.[^\s@]+$/,
+                massage: 'invalid email',
+              },
+            })}
+          />
+          <SignUpError error={emailError} />
         </div>
-        <div className="form-item policy">
-          <input type="checkbox" id="privacy-policy" />
-          <label htmlFor="privacy-policy">I agree to the processing of my personal information</label>
+
+        <div className="form-item">
+          <label htmlFor="password">Password</label>
+          <input
+            className={passError ? 'error-border' : ''}
+            type="password"
+            id="password"
+            placeholder="Password"
+            {...register('password', {
+              required: 'this field is required',
+              minLength: { value: 6, message: 'Your password needs to be at least 6 characters.' },
+              maxLength: { value: 40, massage: 'It"s very big' },
+            })}
+          />
+          <SignUpError error={passError} />
         </div>
         <div className="form-item">
-          <Button type="primary" className="form-button">
+          <label htmlFor="repeat-password">Repeat Password</label>
+          <input
+            className={passRepError ? 'error-border' : ''}
+            type="password"
+            id="repeat-password"
+            placeholder="Repeat Password"
+            {...register('repeat-password', {
+              required: 'this field is required',
+              validate: {
+                matchPassword: (value, { password }) => value === password || 'Passwords must match',
+              },
+            })}
+          />
+          <SignUpError error={passRepError} />
+        </div>
+        <div className="form-item policy">
+          <SignUpError error={policyError} />
+          <input
+            type="checkbox"
+            id="privacy-policy"
+            {...register('policy', { required: '*' })}
+            className={policyError ? 'required' : ''}
+          />
+          <label htmlFor="privacy-policy">I agree to the processing of my personal information</label>
+        </div>
+
+        <div className="form-item">
+          <Button id="sign-up--btn" type="primary" className="form-button" htmlType="submit">
             Create
           </Button>
         </div>
         <div className="sign-up__info info">
           <p className="info__text">
-            Already have an account? <a href="#">Sign In</a>.
+            Already have an account? <Link to="/sign-in">Sign In</Link>.
           </p>
         </div>
       </form>
@@ -97,17 +136,4 @@ const SignUp = () => {
   );
 };
 
-const SignUpError = ({ passwordError, repPassError }) => {
-  if (passwordError) {
-    return <p className="pass-error">Your password needs to be at least 6 characters.</p>;
-  } else if (repPassError) {
-    return <p className="pass-error">Passwords must match</p>;
-  }
-};
-
-SignUpError.propTypes = {
-  passwordError: PropTypes.bool,
-  repPassError: PropTypes.bool,
-};
-
-export default SignUp;
+export { SignUp };

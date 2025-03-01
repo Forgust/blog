@@ -10,7 +10,7 @@ const quotes = [
 ];
 
 const Loader = () => {
-  const [currentQuote, setCurrentQuote] = useState('');
+  const [currentQuote, setCurrentQuote] = useState(quotes[1]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -23,8 +23,9 @@ const Loader = () => {
 
   return (
     <div className="loader">
-      <div className="loader-part-content">
-        <span className="spinner" />
+      <span className="spinner" />
+      <div className="loader-content">
+        <h3 className="loader_title">LOADING...</h3>
         <q className="quote">{currentQuote}</q>
       </div>
     </div>

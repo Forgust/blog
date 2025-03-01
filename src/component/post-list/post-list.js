@@ -1,68 +1,27 @@
 /*eslint-disable*/
-import React, { useEffect, useState } from 'react';
-import PostsHandler from '../posts-handler';
+import React, { useEffect } from 'react';
 import PaginationBlock from '../pagination-block';
 import Loader from '../loader/loader';
+import GetPostsError from '../error/get-error/get-error';
+import { useDispatch, useSelector } from 'react-redux';
+import { getPosts } from '../../redux/actions';
+
 import './post-list.css';
 
 const PostList = () => {
-  const blogApi = new PostsHandler();
-
-  const [posts, setData] = useState([]);
-  const [postsCount, setPostsCount] = useState(0);
-  const [getError, setGetError] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-
-  function dataHandler(res) {
-    console.log(res);
-    setData(res.articles);
-    setPostsCount(res.articlesCount);
-    setGetError(false);
-    setLoading(false);
-  }
-  function dataHandlerError(err) {
-    console.error(err);
-    setGetError(true);
-    setLoading(false);
-  }
-
-  function nextPage(e) {
-    setCurrentPage(e);
-    blogApi
-      .getPosts(e)
-      .then((res) => {
-        dataHandler(res);
-      })
-      .catch((err) => {
-        dataHandlerError(err);
-      });
-  }
+  const dispatch = useDispatch();
+  const { posts, loading, error } = useSelector((state) => state.data);
 
   useEffect(() => {
-    setLoading(true);
-    blogApi
-      .getPosts()
-      .then((res) => {
-        dataHandler(res);
-      })
-      .catch((err) => {
-        dataHandlerError(err);
-      });
+    dispatch(getPosts());
   }, []);
-
-  const postHandler = new PostsHandler();
-  const postList = postHandler.getList(posts);
-
-  if (getError) {
-    return <getError></getError>;
-  }
 
   return (
     <div className="post-list">
+      {error ? <GetPostsError /> : null}
       {loading ? <Loader /> : null}
-      {postList}
-      <PaginationBlock postsCount={postsCount} currentPage={currentPage} nextPage={nextPage} />
+      {posts}
+      <PaginationBlock />
     </div>
   );
 };

@@ -3,21 +3,23 @@ import React from 'react';
 import { Button } from 'antd';
 import Title from 'antd/es/typography/Title';
 import { Link } from 'react-router-dom';
-
+import { useDispatch, useSelector } from 'react-redux';
 import defaultAvatar from './default_avatar.svg';
+import { logOut } from '../../redux/actions';
 
 import './header.css';
 
 const Header = () => {
-  const isLogged = false;
+  const { logged } = useSelector((state) => state.data);
+
   return (
     <header className="header">
       <Title level={4} style={{ margin: '0' }}>
-        <Link className="posts--btn" to="/posts">
+        <Link className="posts--btn" to="/">
           Realworld Blog
         </Link>
       </Title>
-      {isLogged ? <HeaderBtnsLogin /> : <HeaderBtnsNoLogin />}
+      {logged ? <HeaderBtnsLogin /> : <HeaderBtnsNoLogin />}
     </header>
   );
 };
@@ -25,17 +27,24 @@ const Header = () => {
 const HeaderBtnsNoLogin = () => {
   return (
     <div className="header-btns">
-      <Button className="sign-in--btn" color="default" variant="text">
-        Sign-In
-      </Button>
-      <Button className="sign-up--btn" color="green" variant="outlined">
-        Sign-Up
-      </Button>
+      <Link to="/sign-in">
+        <Button className="sign-in--btn" color="default" variant="text">
+          Sign-In
+        </Button>
+      </Link>
+      <Link to="/sign-up">
+        <Button className="sign-up--btn" color="green" variant="outlined">
+          Sign-Up
+        </Button>
+      </Link>
     </div>
   );
 };
 
 const HeaderBtnsLogin = () => {
+  const { user } = useSelector((state) => state.data);
+
+  const dispatch = useDispatch();
   const titleStyle = { margin: '0' };
   return (
     <div className="header-btns">
@@ -44,13 +53,17 @@ const HeaderBtnsLogin = () => {
       </Button>
       <div className="post_author author">
         <div className="author_description">
-          <Title level={5} style={titleStyle}>
-            John Doe
-          </Title>
+          <Link to="/profile" className="username">
+            <Title level={5} style={titleStyle}>
+              {user.username}
+            </Title>
+          </Link>
         </div>
-        <img src={defaultAvatar} alt="avatar icon" className="author_avatar"></img>
+        <Link to="/profile" className="author_avatar">
+          <img src={user.image ? user.image : defaultAvatar} alt="avatar icon" />
+        </Link>
       </div>
-      <Button className="log-out--btn" color="black" variant="outlined">
+      <Button onClick={() => dispatch(logOut())} className="log-out--btn" color="black" variant="outlined">
         Log Out
       </Button>
     </div>

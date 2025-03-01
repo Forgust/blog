@@ -4,35 +4,7 @@ import { Tag } from 'antd';
 import { nanoid } from 'nanoid';
 import Post from '../post/post';
 
-export default class PostsHandler extends Component {
-  url = 'https://blog-platform.kata.academy/api/';
-  async getPosts(page = 1) {
-    let offSet = 0;
-    if (page > 1) {
-      offSet = page * 5;
-    }
-    const res = await fetch(`${this.url}articles?offset=${offSet}&&limit=5`);
-    if (!res.ok) {
-      throw new Error(`error getting url: ${this.url}articles?page=${page}`);
-    }
-    const jsonRes = await res.json();
-
-    return jsonRes;
-  }
-
-  async getPost(id) {
-    const res = await fetch(`${this.url}articles/${id}`);
-    if (!res.ok) {
-      throw new Error(`error getting url: ${this.url}articles/${id}`);
-    }
-    const jsonRes = await res.json();
-    return jsonRes;
-  }
-
-  formateDate(date = new Date()) {
-    date = new Date(date);
-    return format(date, 'MMMM d, yyyy');
-  }
+export default class DataHandler extends Component {
   getPostInfo(post) {
     return {
       title: post.title,
@@ -84,7 +56,25 @@ export default class PostsHandler extends Component {
   onLiked() {
     console.log('liked');
   }
-  nextPage(e) {
-    console.log(e);
+
+  formateDate(date = new Date()) {
+    date = new Date(date);
+    return format(date, 'MMMM d, yyyy');
   }
+
+  setNewErrors = (errorsObj = {}, callBack = () => {}) => {
+    const errors = errorsObj.errors;
+    if (!errors) {
+      return;
+    }
+    if (errors['email or password']) {
+      callBack('other', { type: 'manual', message: 'email or password is invalid' });
+    } else {
+      for (const field in errors) {
+        if (Object.prototype.hasOwnProperty.call(errors, field)) {
+          callBack(field, { type: 'manual', message: errors[field] });
+        }
+      }
+    }
+  };
 }
