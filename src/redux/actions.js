@@ -98,16 +98,15 @@ export const loginCurrentUser = (token) => {
   };
 };
 
-export const loginNewUser = (data) => {
+export const loginNewUser = (body) => {
   return async (dispatch) => {
     try {
-      const body = { user: { email: data['email-in'], password: data['password-in'] } };
       const res = await fetch('https://blog-platform.kata.academy/api/users/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(body),
+        body: JSON.stringify({ user: { ...body } }),
       });
 
       if (res.status !== 200) {

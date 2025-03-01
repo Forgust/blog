@@ -64,16 +64,9 @@ export default class DataHandler extends Component {
 
   setNewErrors = (errorsObj = {}, callBack = () => {}) => {
     const errors = errorsObj.errors;
-    if (!errors) {
-      return;
-    }
-    if (errors['email or password']) {
-      callBack('other', { type: 'manual', message: 'email or password is invalid' });
-    } else {
-      for (const field in errors) {
-        if (Object.prototype.hasOwnProperty.call(errors, field)) {
-          callBack(field, { type: 'manual', message: errors[field] });
-        }
+    for (const field in errors) {
+      if (Object.prototype.hasOwnProperty.call(errors, field)) {
+        callBack(field, { type: 'manual', message: errors[field] });
       }
     }
   };

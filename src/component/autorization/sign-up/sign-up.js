@@ -29,7 +29,6 @@ const SignUp = () => {
   }, [logged]);
 
   const onSubmit = (data) => {
-    console.log(data);
     dispatch(regNewUser(data));
   };
 
@@ -122,7 +121,7 @@ const SignUp = () => {
         </div>
 
         <div className="form-item">
-          <Button id="sign-up--btn" type="primary" className="form-button" htmlType="submit">
+          <Button type="primary" className="form-button" htmlType="submit">
             Create
           </Button>
         </div>
