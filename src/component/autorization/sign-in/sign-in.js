@@ -35,6 +35,7 @@ const SignIn = () => {
       setOtherErr('email or password is invalid');
     }
     return () => {
+      setOtherErr('');
       clearErrors();
     };
   }, [serviceErrors]);
