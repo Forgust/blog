@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400&display=swap');
 .post {
   background-color: white;
   display: grid;
@@ -20,8 +19,8 @@
   gap: 6px;
 }
 .post_description {
-  opacity: 0.9;
-  font-size: 14px;
+  font-weight: 400;
+  font-size: 12px;
 }
 
 .post_title-block {
@@ -47,8 +46,13 @@
 .author {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   gap: 8px;
   align-items: center;
+  justify-content: end;
+}
+.author_description > h5 {
+  text-align: end;
 }
 
 .post_date {
@@ -68,7 +72,7 @@
 
 .post_like-btn:disabled {
   cursor: auto;
-  opacity: 0.8;
+  opacity: 0.6;
 }
 
 .post_like-btn.liked {
@@ -78,4 +82,10 @@
 .author_avatar {
   height: 40px;
   width: 40px;
+}
+
+.post_tags {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 6px;
 }

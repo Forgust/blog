@@ -1,11 +1,10 @@
-/*eslint-disable*/
 import React from 'react';
 import { Button } from 'antd';
 import Title from 'antd/es/typography/Title';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import defaultAvatar from './default_avatar.svg';
 import { logOut } from '../../redux/actions';
+import defaultAvatar from './default_avatar.svg';
 
 import './header.css';
 
@@ -48,9 +47,11 @@ const HeaderBtnsLogin = () => {
   const titleStyle = { margin: '0' };
   return (
     <div className="header-btns">
-      <Button className="create-article--btn" color="green" variant="outlined">
-        Create article
-      </Button>
+      <Link to="/new-article">
+        <Button className="create-article--btn" color="green" variant="outlined">
+          Create article
+        </Button>
+      </Link>
       <div className="post_author author">
         <div className="author_description">
           <Link to="/profile" className="username">
@@ -71,4 +72,3 @@ const HeaderBtnsLogin = () => {
 };
 
 export default Header;
-/*eslint-enable*/

@@ -4,6 +4,7 @@ import { Tag } from 'antd';
 import { nanoid } from 'nanoid';
 import Post from '../post/post';
 
+import defaultAvatar from '../post/post-img/default_avatar.svg';
 export default class DataHandler extends Component {
   getPostInfo(post) {
     return {
@@ -69,5 +70,8 @@ export default class DataHandler extends Component {
         callBack(field, { type: 'manual', message: errors[field] });
       }
     }
+  };
+  onImageError = (e) => {
+    e.target.src = defaultAvatar;
   };
 }

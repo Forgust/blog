@@ -12,7 +12,7 @@ const NotFoundPage = () => {
         <img className="not-found-page_image" alt="not found" src={notFound} />
         <q className="not-found-page_text">
           This page is MIA. Return to the{' '}
-          <Link className="not-found-page_btn" to="/posts">
+          <Link className="not-found-page_btn" to="/">
             main page
           </Link>{' '}
           and see what’s left of this dumpster fire of a site

@@ -9,16 +9,37 @@ const GET_POST_ERROR = 'GET_POST_ERROR';
 const LOGIN_USER_SUCCESS = 'LOGIN_CURRENT_USER_SUCCESS';
 const LOGIN_USER_ERROR = 'LOGIN_CURRENT_USER_ERROR';
 const LOGOUT_USER = 'LOGOUT_USER';
+const CREATE_POST_SUCCESS = 'CREATE_POST_SUCCESS';
+const CREATE_POST_ERROR = 'CREATE_POST_ERROR';
+const DELETE_POST_SUCCESS = 'DELETE_POST_SUCCESS';
+const DELETE_POST_ERROR = 'DELETE_POST_ERROR';
+const CLEAR_REDIRECT = 'CLEAR_REDIRECT';
+const EDIT_POST_SUCCESS = 'EDIT_POST_SUCCESS';
+const EDIT_POST_ERROR = 'EDIT_POST_ERROR';
+const EDIT_USER_SUCCESS = 'EDIT_USER_SUCCESS';
+const EDIT_USER_ERROR = 'EDIT_USER_ERROR';
+const LIKE_POST_SUCCESS = 'LIKE_POST_SUCCESS';
+const LIKE_POST_ERROR = 'LIKE_POST_ERROR';
 
 export const getPosts = (page = 1) => {
   return async (dispatch) => {
     try {
+      const currentToken = Cookies.get('token');
       dispatch({ type: LOADING });
       let offSet = 0;
       if (page > 1) {
         offSet = page * 5;
       }
-      const res = await fetch(`https://blog-platform.kata.academy/api/articles?offset=${offSet}&&limit=5`);
+      const options = {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${currentToken}`,
+        },
+      };
+      const res = await fetch(
+        `https://blog-platform.kata.academy/api/articles?offset=${offSet}&&limit=5`,
+        currentToken ? options : null
+      );
       if (!res.ok) {
         throw new Error(`error getting url: https://blog-platform.kata.academy/api/articles?page=${page}`);
       }
@@ -34,7 +55,15 @@ export const getPosts = (page = 1) => {
 export const getPost = (id) => {
   return async (dispatch) => {
     try {
-      const res = await fetch(`https://blog-platform.kata.academy/api/articles/${id}`);
+      const currentToken = Cookies.get('token');
+      const options = {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${currentToken}`,
+        },
+      };
+      dispatch({ type: LOADING });
+      const res = await fetch(`https://blog-platform.kata.academy/api/articles/${id}`, currentToken ? options : null);
       if (!res.ok) {
         throw new Error(`error getting url: https://blog-platform.kata.academy/api/articles/${id}`);
       }
@@ -76,7 +105,6 @@ export const regNewUser = (body) => {
 export const loginCurrentUser = (token) => {
   return async (dispatch) => {
     try {
-      console.log(token);
       const res = await fetch('https://blog-platform.kata.academy/api/user', {
         method: 'GET',
         headers: {
@@ -89,8 +117,7 @@ export const loginCurrentUser = (token) => {
         throw new RegistrationError('error from https://blog-platform.kata.academy/api/user', errorJson);
       }
       const jsonRes = await res.json();
-      console.log(res);
-      console.log(jsonRes);
+
       dispatch({ type: LOGIN_USER_SUCCESS, payload: jsonRes });
     } catch (errors) {
       dispatch({ type: LOGIN_USER_ERROR, payload: errors });
@@ -126,7 +153,6 @@ export const editProfile = (body) => {
     try {
       const currentToken = Cookies.get('token');
 
-      console.log(body);
       const res = await fetch('https://blog-platform.kata.academy/api/user', {
         method: 'PUT',
         headers: {
@@ -140,17 +166,116 @@ export const editProfile = (body) => {
         throw new RegistrationError('error from https://blog-platform.kata.academy/api/user', errorJson);
       }
       const jsonRes = await res.json();
-      console.log(res);
-      console.log(jsonRes);
-      dispatch({ type: LOGIN_USER_SUCCESS, payload: jsonRes });
+
+      dispatch({ type: EDIT_USER_SUCCESS, payload: jsonRes });
     } catch (errors) {
-      dispatch({ type: LOGIN_USER_ERROR, payload: errors });
+      dispatch({ type: EDIT_USER_ERROR, payload: errors });
+    }
+  };
+};
+
+export const createPost = (data) => {
+  return async (dispatch) => {
+    try {
+      const currentToken = Cookies.get('token');
+      const res = await fetch('https://blog-platform.kata.academy/api/articles', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${currentToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ article: { ...data } }),
+      });
+      if (!res.ok) {
+        const errorJson = await res.json();
+        throw new RegistrationError('error from https://blog-platform.kata.academy/api/articles', errorJson);
+      }
+      const jsonRes = await res.json();
+      dispatch({ type: CREATE_POST_SUCCESS, payload: jsonRes });
+    } catch (err) {
+      dispatch({ type: CREATE_POST_ERROR, payload: err });
+    }
+  };
+};
+
+export const deletePost = (id) => {
+  return async (dispatch) => {
+    try {
+      const currentToken = Cookies.get('token');
+      const res = await fetch(`https://blog-platform.kata.academy/api/articles/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${currentToken}`,
+        },
+      });
+      console.log(res);
+      if (!res.ok) {
+        const errorJson = await res.json();
+        throw new RegistrationError('error from https://blog-platform.kata.academy/api/articles', errorJson);
+      }
+
+      dispatch({ type: DELETE_POST_SUCCESS });
+    } catch (err) {
+      dispatch({ type: DELETE_POST_ERROR, payload: err });
+    }
+  };
+};
+
+export const editPost = (data, id) => {
+  return async (dispatch) => {
+    try {
+      const currentToken = Cookies.get('token');
+      const res = await fetch(`https://blog-platform.kata.academy/api/articles/${id}`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${currentToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ article: { ...data } }),
+      });
+      if (!res.ok) {
+        const errorJson = await res.json();
+        throw new RegistrationError('error from https://blog-platform.kata.academy/api/articles', errorJson);
+      }
+      const jsonRes = await res.json();
+      dispatch({ type: EDIT_POST_SUCCESS, payload: jsonRes });
+    } catch (err) {
+      dispatch({ type: EDIT_POST_ERROR, payload: err });
+    }
+  };
+};
+
+export const likePost = (id, liked) => {
+  return async (dispatch) => {
+    try {
+      const currentToken = Cookies.get('token');
+      const currentAction = liked ? 'DELETE' : 'POST';
+      const res = await fetch(`https://blog-platform.kata.academy/api/articles/${id}/favorite`, {
+        method: currentAction,
+        headers: {
+          Authorization: `Bearer ${currentToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!res.ok) {
+        const errorJson = await res.json();
+        throw new RegistrationError('error from https://blog-platform.kata.academy/api/articles', errorJson);
+      }
+      const jsonRes = await res.json();
+
+      dispatch({ type: LIKE_POST_SUCCESS, payload: jsonRes });
+    } catch (err) {
+      dispatch({ type: LIKE_POST_ERROR, payload: err });
     }
   };
 };
 
 export const logOut = () => ({
   type: LOGOUT_USER,
+});
+
+export const clearRedirect = () => ({
+  type: CLEAR_REDIRECT,
 });
 
 export const actionTypes = {
@@ -162,4 +287,15 @@ export const actionTypes = {
   LOGIN_USER_SUCCESS,
   LOGIN_USER_ERROR,
   LOGOUT_USER,
+  DELETE_POST_SUCCESS,
+  DELETE_POST_ERROR,
+  CREATE_POST_SUCCESS,
+  CREATE_POST_ERROR,
+  CLEAR_REDIRECT,
+  EDIT_POST_SUCCESS,
+  EDIT_POST_ERROR,
+  EDIT_USER_SUCCESS,
+  EDIT_USER_ERROR,
+  LIKE_POST_SUCCESS,
+  LIKE_POST_ERROR,
 };

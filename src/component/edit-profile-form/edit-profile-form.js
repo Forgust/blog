@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { editProfile } from '../../redux/actions';
-
+import DataHandler from '../data-handler';
 import { SignUpError } from '../error/registration-error';
 
 import './edit-profile-form.css';
@@ -13,11 +13,13 @@ import './edit-profile-form.css';
 const EditProfile = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { logged, user } = useSelector((state) => state.data);
-  const { register, handleSubmit, formState } = useForm({ mode: 'onChange' });
+  const { logged, user, serviceErrors } = useSelector((state) => state.data);
+  const { register, handleSubmit, formState, clearErrors, setError } = useForm({ mode: 'onChange' });
+  const handler = new DataHandler();
   const onSubmit = (data) => {
     dispatch(editProfile(data));
   };
+
   const errors = formState.errors;
   const usernameError = errors['username']?.message;
   const emailError = errors['email']?.message;
@@ -29,6 +31,15 @@ const EditProfile = () => {
       navigate('/');
     }
   }, [logged]);
+
+  useEffect(() => {
+    clearErrors();
+    handler.setNewErrors(serviceErrors, (field, error) => setError(field, error));
+    return () => {
+      clearErrors();
+    };
+  }, [serviceErrors]);
+
   return (
     <article className="edit-profile">
       <form onSubmit={handleSubmit(onSubmit)} className="edit-profile_form">

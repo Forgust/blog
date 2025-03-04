@@ -16,12 +16,14 @@ const SignUp = () => {
   const { serviceErrors, logged } = useSelector((state) => state.data);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   useEffect(() => {
     handler.setNewErrors(serviceErrors, (field, error) => setError(field, error));
     return () => {
       clearErrors();
     };
   }, [serviceErrors]);
+
   useEffect(() => {
     if (logged) {
       navigate('/');
@@ -38,6 +40,7 @@ const SignUp = () => {
   const passError = errors['password']?.message;
   const passRepError = errors['repeat-password']?.message;
   const policyError = errors['policy']?.message;
+
   return (
     <article className="sign-up">
       <form onSubmit={handleSubmit(onSubmit)} className="sign-up_form">
