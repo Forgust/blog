@@ -1,6 +1,6 @@
 import { Button } from 'antd';
 import Title from 'antd/es/typography/Title';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -10,6 +10,7 @@ import { loginNewUser } from '../../../redux/actions';
 import './sign-in.css';
 
 const SignIn = () => {
+  const [otherErrors, setOtherErr] = useState('');
   const { logged, serviceErrors } = useSelector((state) => state.data);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -18,7 +19,6 @@ const SignIn = () => {
   const errors = formState.errors;
   const emailError = errors['email']?.message;
   const passError = errors['password']?.message;
-  let otherErrors = '';
 
   const onSubmit = (data) => {
     dispatch(loginNewUser(data));
@@ -32,13 +32,13 @@ const SignIn = () => {
 
   useEffect(() => {
     if (serviceErrors) {
-      otherErrors = 'email or password is invalid';
+      setOtherErr('email or password is invalid');
     }
     return () => {
       clearErrors();
     };
   }, [serviceErrors]);
-
+  console.log(otherErrors);
   return (
     <article className="sign-in">
       <form onSubmit={handleSubmit(onSubmit)} className="sign-in_form" method="post">
@@ -77,10 +77,10 @@ const SignIn = () => {
         </div>
 
         <div className="form-item">
+          <SignUpError error={otherErrors} />
           <Button type="primary" htmlType="submit" className="form-button">
             Login
           </Button>
-          <SignUpError error={otherErrors} />
         </div>
         <div className="sign-in__info info">
           <p className="info__text">
