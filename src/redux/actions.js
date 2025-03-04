@@ -44,7 +44,6 @@ export const getPosts = (page = 1) => {
         throw new Error(`error getting url: https://blog-platform.kata.academy/api/articles?page=${page}`);
       }
       const data = await res.json();
-
       dispatch({ type: GET_POSTS_SUCCESS, payload: [data, page] });
     } catch (error) {
       dispatch({ type: GET_POSTS_ERROR, payload: error });
@@ -112,7 +111,6 @@ export const loginCurrentUser = (token) => {
         },
       });
       if (res.status !== 200) {
-        console.log('ошибка');
         const errorJson = await res.json();
         throw new RegistrationError('error from https://blog-platform.kata.academy/api/user', errorJson);
       }
@@ -208,7 +206,6 @@ export const deletePost = (id) => {
           Authorization: `Bearer ${currentToken}`,
         },
       });
-      console.log(res);
       if (!res.ok) {
         const errorJson = await res.json();
         throw new RegistrationError('error from https://blog-platform.kata.academy/api/articles', errorJson);

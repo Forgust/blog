@@ -80,15 +80,13 @@ export const dataReducer = (state = initialDataState, action) => {
     case LOGIN_USER_SUCCESS: {
       const currentUser = action.payload.user;
       Cookies.set('token', currentUser.token);
-      return { ...state, logged: true, loginError: false, user: currentUser };
+      return { ...state, logged: true, loginError: false, user: currentUser, serviceErrors: {} };
     }
     case LOGIN_USER_ERROR: {
       const serviceErrors = action.payload.data;
-      console.log(serviceErrors);
       return { ...state, logged: false, LoginError: true, serviceErrors: serviceErrors };
     }
     case DELETE_POST_SUCCESS: {
-      console.log('deleted');
       return { ...state, post: {}, redirectTo: '/' };
     }
     case EDIT_USER_SUCCESS: {
@@ -109,7 +107,6 @@ export const dataReducer = (state = initialDataState, action) => {
     case LIKE_POST_SUCCESS: {
       const newArticle = action.payload.article;
       const articles = state.articles;
-      console.log(newArticle, articles);
       const postInfo = handler.getPostInfo(newArticle);
       const updatedArticles = articles.map((article) => {
         if (article.slug === newArticle.slug) {

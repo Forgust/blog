@@ -31,7 +31,7 @@ const SignIn = () => {
   }, [logged]);
 
   useEffect(() => {
-    if (serviceErrors) {
+    if (serviceErrors.errors) {
       setOtherErr('email or password is invalid');
     }
     return () => {
@@ -39,7 +39,7 @@ const SignIn = () => {
       clearErrors();
     };
   }, [serviceErrors]);
-  console.log(otherErrors);
+
   return (
     <article className="sign-in">
       <form onSubmit={handleSubmit(onSubmit)} className="sign-in_form" method="post">
