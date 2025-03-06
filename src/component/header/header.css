@@ -9,7 +9,13 @@
   padding: 16px 24px;
   box-sizing: border-box;
 }
-
+.header_title {
+  margin: 0;
+}
+.header_title > a {
+  font-size: 24px;
+  text-decoration: none;
+}
 .header-btns {
   display: flex;
   flex-direction: row;

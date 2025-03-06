@@ -20,6 +20,9 @@ const EDIT_USER_SUCCESS = 'EDIT_USER_SUCCESS';
 const EDIT_USER_ERROR = 'EDIT_USER_ERROR';
 const LIKE_POST_SUCCESS = 'LIKE_POST_SUCCESS';
 const LIKE_POST_ERROR = 'LIKE_POST_ERROR';
+const REGISTRATION_USER_SUCCESS = 'REGISTRATION_USER_SUCCESS';
+const REGISTRATION_USER_ERROR = 'REGISTRATION_USER_ERROR';
+const CLEAR_SERVICE_ERRORS = 'CLEAR_SERVICE_ERRORS';
 
 export const getPosts = (page = 1) => {
   return async (dispatch) => {
@@ -94,9 +97,9 @@ export const regNewUser = (body) => {
       }
 
       const jsonRes = await res.json();
-      dispatch({ type: LOGIN_USER_SUCCESS, payload: jsonRes });
+      dispatch({ type: REGISTRATION_USER_SUCCESS, payload: jsonRes });
     } catch (errors) {
-      dispatch({ type: LOGIN_USER_ERROR, payload: errors });
+      dispatch({ type: REGISTRATION_USER_ERROR, payload: errors });
     }
   };
 };
@@ -275,6 +278,11 @@ export const clearRedirect = () => ({
   type: CLEAR_REDIRECT,
 });
 
+export const clearServiceErrors = (name) => ({
+  type: CLEAR_SERVICE_ERRORS,
+  payload: name,
+});
+
 export const actionTypes = {
   LOADING,
   GET_POSTS_SUCCESS,
@@ -295,4 +303,7 @@ export const actionTypes = {
   EDIT_USER_ERROR,
   LIKE_POST_SUCCESS,
   LIKE_POST_ERROR,
+  REGISTRATION_USER_SUCCESS,
+  REGISTRATION_USER_ERROR,
+  CLEAR_SERVICE_ERRORS,
 };

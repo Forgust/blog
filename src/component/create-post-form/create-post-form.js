@@ -6,10 +6,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { createPost, editPost } from '../../redux/actions';
 import { SignUpError } from '../error/registration-error';
+import DataHandler from '../data-handler';
 
 import './create-post-form.css';
 
 const CreatePostForm = ({ isEdit }) => {
+  const handler = new DataHandler();
   const { logged, post, redirectTo } = useSelector((state) => state.data);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -46,7 +48,10 @@ const CreatePostForm = ({ isEdit }) => {
   const textErr = errors['body']?.message;
 
   const onSubmit = (data) => {
-    isEdit ? dispatch(editPost(data, post.slug)) : dispatch(createPost(data));
+    console.log(data);
+    const newData = { ...data, tagList: handler.filterTags(data.tagList) };
+    console.log(newData);
+    isEdit ? dispatch(editPost(newData, post.slug)) : dispatch(createPost(newData));
   };
   return (
     <div className="create-post">

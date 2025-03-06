@@ -74,4 +74,13 @@ export default class DataHandler extends Component {
   onImageError = (e) => {
     e.target.src = defaultAvatar;
   };
+  filterTags(taglist) {
+    const newTagList = taglist.filter((tag) => {
+      if (tag) {
+        console.log(tag);
+        return tag;
+      }
+    });
+    return newTagList;
+  }
 }

@@ -18,6 +18,9 @@ const {
   EDIT_USER_SUCCESS,
   EDIT_USER_ERROR,
   LIKE_POST_SUCCESS,
+  REGISTRATION_USER_SUCCESS,
+  REGISTRATION_USER_ERROR,
+  CLEAR_SERVICE_ERRORS,
 } = actionTypes;
 
 const initialDataState = {
@@ -25,7 +28,8 @@ const initialDataState = {
   logged: false,
   loginError: false,
   user: {},
-  serviceErrors: {},
+  serviceErrorsLog: {},
+  serviceErrorsReg: {},
   articles: [],
   post: {},
   error: false,
@@ -76,15 +80,23 @@ export const dataReducer = (state = initialDataState, action) => {
     }
     case GET_POST_ERROR:
       return { ...state, error: true };
-
+    case REGISTRATION_USER_SUCCESS: {
+      const currentUser = action.payload.user;
+      Cookies.set('token', currentUser.token);
+      return { ...state, logged: true, loginError: false, user: currentUser, serviceErrorsReg: {} };
+    }
+    case REGISTRATION_USER_ERROR: {
+      const serviceErrorsReg = action.payload.data;
+      return { ...state, logged: false, LoginError: true, serviceErrorsReg: serviceErrorsReg };
+    }
     case LOGIN_USER_SUCCESS: {
       const currentUser = action.payload.user;
       Cookies.set('token', currentUser.token);
       return { ...state, logged: true, loginError: false, user: currentUser, serviceErrors: {} };
     }
     case LOGIN_USER_ERROR: {
-      const serviceErrors = action.payload.data;
-      return { ...state, logged: false, LoginError: true, serviceErrors: serviceErrors };
+      const serviceErrorsLog = action.payload.data;
+      return { ...state, logged: false, LoginError: true, serviceErrorsLog: serviceErrorsLog };
     }
     case DELETE_POST_SUCCESS: {
       return { ...state, post: {}, redirectTo: '/' };
@@ -103,6 +115,17 @@ export const dataReducer = (state = initialDataState, action) => {
       return { ...state, logged: false };
     case CLEAR_REDIRECT: {
       return { ...state, redirectTo: '' };
+    }
+    case CLEAR_SERVICE_ERRORS: {
+      const name = action.payload;
+      let newState = { ...state };
+      if (name === 'log') {
+        newState = { ...state, serviceErrorsLog: {} };
+      }
+      if (name === 'reg') {
+        newState = { ...state, serviceErrorsReg: {} };
+      }
+      return newState;
     }
     case LIKE_POST_SUCCESS: {
       const newArticle = action.payload.article;

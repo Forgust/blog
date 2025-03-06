@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Title from 'antd/es/typography/Title';
 import { Button } from 'antd';
@@ -6,23 +6,26 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { SignUpError } from '../../error/registration-error';
 import DataHandler from '../../data-handler';
-import { regNewUser } from '../../../redux/actions';
+import { regNewUser, clearServiceErrors } from '../../../redux/actions';
 
 import './sign-up.css';
 
 const SignUp = () => {
   const handler = new DataHandler();
   const { register, handleSubmit, formState, setError, clearErrors } = useForm({ mode: 'onChange' });
-  const { serviceErrors, logged } = useSelector((state) => state.data);
+  const { serviceErrorsReg, logged } = useSelector((state) => state.data);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const saveErrors = useMemo(() => serviceErrorsReg, [serviceErrorsReg]);
   useEffect(() => {
-    handler.setNewErrors(serviceErrors, (field, error) => setError(field, error));
+    dispatch(clearServiceErrors('reg'));
+  }, []);
+  useEffect(() => {
+    handler.setNewErrors(serviceErrorsReg, (field, error) => setError(field, error));
     return () => {
       clearErrors();
     };
-  }, [serviceErrors]);
+  }, [saveErrors]);
 
   useEffect(() => {
     if (logged) {

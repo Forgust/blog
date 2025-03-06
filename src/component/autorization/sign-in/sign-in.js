@@ -1,29 +1,30 @@
 import { Button } from 'antd';
 import Title from 'antd/es/typography/Title';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { SignUpError } from '../../error/registration-error';
-import { loginNewUser } from '../../../redux/actions';
+import { loginNewUser, clearServiceErrors } from '../../../redux/actions';
 
 import './sign-in.css';
 
 const SignIn = () => {
-  const [otherErrors, setOtherErr] = useState('');
-  const { logged, serviceErrors } = useSelector((state) => state.data);
   const dispatch = useDispatch();
+  const [otherErrors, setOtherErr] = useState('');
+  const { logged, serviceErrorsLog } = useSelector((state) => state.data);
   const navigate = useNavigate();
   const { register, handleSubmit, formState, clearErrors } = useForm({ mode: 'onChange' });
-
   const errors = formState.errors;
   const emailError = errors['email']?.message;
   const passError = errors['password']?.message;
-
   const onSubmit = (data) => {
     dispatch(loginNewUser(data));
   };
-
+  const saveErrors = useMemo(() => serviceErrorsLog, [serviceErrorsLog]);
+  useEffect(() => {
+    dispatch(clearServiceErrors('log'));
+  }, []);
   useEffect(() => {
     if (logged) {
       navigate('/');
@@ -31,14 +32,14 @@ const SignIn = () => {
   }, [logged]);
 
   useEffect(() => {
-    if (serviceErrors.errors) {
+    if (serviceErrorsLog.errors) {
       setOtherErr('email or password is invalid');
     }
     return () => {
       setOtherErr('');
       clearErrors();
     };
-  }, [serviceErrors]);
+  }, [saveErrors]);
 
   return (
     <article className="sign-in">

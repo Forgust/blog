@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Markdown from 'react-markdown';
 import Title from 'antd/es/typography/Title';
@@ -74,13 +74,16 @@ const OpenPostView = () => {
         <img src={authorImage} alt="avatar icon" className="author_avatar" />
         {isMyPost ? <PostButtons id={id} /> : null}
       </div>
-      <Markdown>{body}</Markdown>
+      <div className="open-post_body">
+        <Markdown>{body}</Markdown>
+      </div>
     </article>
   );
 };
 
 const PostButtons = ({ id }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const confirm = () => {
     dispatch(deletePost(id));
   };
@@ -99,12 +102,10 @@ const PostButtons = ({ id }) => {
           DELETE
         </Button>
       </Popconfirm>
-      <Link to={`/articles/${id}/edit`}>
-        {' '}
-        <Button color="green" variant="outlined" className="post-button">
-          Edit
-        </Button>
-      </Link>
+
+      <Button color="green" variant="outlined" className="post-button" onClick={() => navigate(`/articles/${id}/edit`)}>
+        Edit
+      </Button>
     </div>
   );
 };

@@ -82,6 +82,7 @@
 .author_avatar {
   height: 40px;
   width: 40px;
+  border-radius: 50%;
 }
 
 .post_tags {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'antd';
 import Title from 'antd/es/typography/Title';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logOut } from '../../redux/actions';
 import defaultAvatar from './default_avatar.svg';
@@ -13,45 +13,42 @@ const Header = () => {
 
   return (
     <header className="header">
-      <Title level={4} style={{ margin: '0' }}>
+      <h1 className="header_title">
         <Link className="posts--btn" to="/">
           Realworld Blog
         </Link>
-      </Title>
+      </h1>
       {logged ? <HeaderBtnsLogin /> : <HeaderBtnsNoLogin />}
     </header>
   );
 };
 
 const HeaderBtnsNoLogin = () => {
+  const navigate = useNavigate();
   return (
     <div className="header-btns">
-      <Link to="/sign-in">
-        <Button className="sign-in--btn" color="default" variant="text">
-          Sign-In
-        </Button>
-      </Link>
-      <Link to="/sign-up">
-        <Button className="sign-up--btn" color="green" variant="outlined">
-          Sign-Up
-        </Button>
-      </Link>
+      <Button className="sign-in--btn" color="default" variant="text" onClick={() => navigate('/sign-in')}>
+        Sign-In
+      </Button>
+
+      <Button className="sign-up--btn" color="green" variant="outlined" onClick={() => navigate('/sign-up')}>
+        Sign-Up
+      </Button>
     </div>
   );
 };
 
 const HeaderBtnsLogin = () => {
   const { user } = useSelector((state) => state.data);
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
   const titleStyle = { margin: '0' };
   return (
     <div className="header-btns">
-      <Link to="/new-article">
-        <Button className="create-article--btn" color="green" variant="outlined">
-          Create article
-        </Button>
-      </Link>
+      <Button className="create-article--btn" color="green" variant="outlined" onClick={() => navigate('/new-article')}>
+        Create article
+      </Button>
       <div className="post_author author">
         <div className="author_description">
           <Link to="/profile" className="username">
